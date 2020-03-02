@@ -1,56 +1,51 @@
-const types = {
+import url from "../../utils/url";
+import { FETCH_DATA } from "../middlewares/api";
+import { schema } from "./entities/products";
+
+const type = {
   //发送请求
-  FETCH_LIKES_REQUEST: 'HOME/FETCH_LIKES_REQUEST',
+  FETCH_LIKES_REQUEST: "HOME/FETCH_LIKES_REQUEST",
   //请求成功
-  FETCH_LIKES_SUCCESS: 'HOME/FETCH_LIKES_SUCCESS',
+  FETCH_LIKES_SUCCESS: "HOME/FETCH_LIKES_SUCCESS",
   //请求失败
-  FETCH_LIKES_FAILURE: 'HOME/FETCH_LIKES_FAILURE'
-}
+  FETCH_LIKES_FAILURE: "HOME/FETCH_LIKES_FAILURE"
+};
 
 export const actions = {
   loadLikes() {
-    return (dispath, getState) => {
-
-    }
+    return (dispatch, getState) => {
+      const endpoint = url.getProductList(0, 10);
+      return dispatch(fetchLikes(endpoint));
+    };
   }
-}
+};
 
-const actionCreators = {
-  fetchLikesRequest() {
-    return {
-      type: types.FETCH_LIKES_REQUEST
-    }
-  },
-
-  fetchLikesSuccess(data) {
-    return {
-      type: types.FETCH_LIKES_SUCCESS,
-      data
-    }
-  },
-
-  fetchLikesFailure(err) {
-    return {
-      type: types.FETCH_LIKES_FAILURE,
-      err
-    }
+const fetchLikes = endpoint => ({
+  [FETCH_DATA]: {
+    type: [
+      type.FETCH_LIKES_REQUEST,
+      type.FETCH_LIKES_SUCCESS,
+      type.FETCH_LIKES_FAILURE
+    ],
+    endpoint,
+    schema
   }
-}
+});
 
-const reducer = (state = {}, action ) => {
+const reducer = (state = {}, action) => {
   switch (action.type) {
-    case types.FETCH_LIKES_REQUEST:
+    case type.FETCH_LIKES_REQUEST:
       //
-    
-    case types.FETCH_LIKES_SUCCESS:
+      break;
+    case type.FETCH_LIKES_SUCCESS:
       //
-    
-    case types.FETCH_LIKES_FAILURE:
+      break;
+    case type.FETCH_LIKES_FAILURE:
       //
-    
+      break;
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default reducer
+export default reducer;

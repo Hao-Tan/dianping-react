@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "./index.css"
+import "./style.css";
 
 const dataSource = [
   [
@@ -154,7 +152,11 @@ export default class Category extends Component {
                 {section.map((item, i) => {
                   return (
                     <div className="category__item" key={i}>
-                      <img className="category__icon" src={item.src} alt={item.name} />
+                      <img
+                        className="category__icon"
+                        src={item.src}
+                        alt={item.name}
+                      />
                       <div>
                         <span className="category__text">{item.name}</span>
                       </div>

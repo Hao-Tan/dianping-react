@@ -1,4 +1,4 @@
-import { createStore, applyMiddlewares, compose } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import api from "../redux/middlewares/api";
 import rootReducer from "./modules";
@@ -13,10 +13,10 @@ if (
   store = createStore(
     rootReducer,
     composeEnhancer,
-    applyMiddlewares(thunk, api)
+    applyMiddleware(thunk, api)
   );
 } else {
-  store = createStore(rootReducer, applyMiddlewares(thunk, api));
+  store = createStore(rootReducer, applyMiddleware(thunk, api));
 }
 
 export default store;

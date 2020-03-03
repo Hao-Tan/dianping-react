@@ -2,7 +2,7 @@ import url from "../../utils/url";
 import { FETCH_DATA } from "../middlewares/api";
 import { schema } from "./entities/products";
 
-const type = {
+const types = {
   //发送请求
   FETCH_LIKES_REQUEST: "HOME/FETCH_LIKES_REQUEST",
   //请求成功
@@ -22,10 +22,10 @@ export const actions = {
 
 const fetchLikes = endpoint => ({
   [FETCH_DATA]: {
-    type: [
-      type.FETCH_LIKES_REQUEST,
-      type.FETCH_LIKES_SUCCESS,
-      type.FETCH_LIKES_FAILURE
+    types: [
+      types.FETCH_LIKES_REQUEST,
+      types.FETCH_LIKES_SUCCESS,
+      types.FETCH_LIKES_FAILURE
     ],
     endpoint,
     schema
@@ -34,13 +34,13 @@ const fetchLikes = endpoint => ({
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
-    case type.FETCH_LIKES_REQUEST:
+    case types.FETCH_LIKES_REQUEST:
       //
       break;
-    case type.FETCH_LIKES_SUCCESS:
+    case types.FETCH_LIKES_SUCCESS:
       //
       break;
-    case type.FETCH_LIKES_FAILURE:
+    case types.FETCH_LIKES_FAILURE:
       //
       break;
     default:

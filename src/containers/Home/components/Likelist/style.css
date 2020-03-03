@@ -14,3 +14,14 @@
   list-style: none;
   padding: 0;
 }
+
+.likeList__viewAll {
+  display: block;
+  height: 45px;
+  width: 100%;
+  line-height: 45px;
+  text-align: center;
+  background-color: #fff;
+  color: #333;
+  font-size: 15px;
+}

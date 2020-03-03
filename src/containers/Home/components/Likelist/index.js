@@ -66,8 +66,16 @@ const dataSource = [
 ];
 
 export default class Likelist extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: dataSource,
+      loadTimes: 1
+    }
+  }
+
   render() {
-    const data = dataSource
+    const { data, loadTimes } = this.state
     return (
       <div className="likeList">
         <div className="likeList__header">猜你喜欢</div>
@@ -78,6 +86,10 @@ export default class Likelist extends Component {
             })
           }
         </ul>
+
+        {
+          loadTimes < 3 ? '' : <a href="##" className="likeList__viewAll">查看更多</a>
+        }
       </div>
     )
   }

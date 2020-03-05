@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from "redux";
 import url from "../../utils/url";
 import { FETCH_DATA } from "../middlewares/api";
 import { schema } from "./entities/products";
@@ -29,7 +29,7 @@ const initialState = {
     pageCount: 0,
     ids: []
   },
-  discount: {
+  discounts: {
     isFetching: false,
     ids: []
   }
@@ -42,10 +42,15 @@ export const actions = {
     return (dispatch, getState) => {
       const { pageCount } = getState().home.likes;
       const rowIndex = pageCount * params.PAGE_SIZE_LIKES;
-      const endpoint = url.getProductList(params.PATH_LIKES, rowIndex, params);
+      const endpoint = url.getProductList(
+        params.PATH_LIKES,
+        rowIndex,
+        params.PAGE_SIZE_LIKES
+      );
       return dispatch(fetchLikes(endpoint));
     };
   },
+  
   // 加载折扣商品
   loadDiscounts() {
     return (dispatch, getState) => {
@@ -53,7 +58,7 @@ export const actions = {
         params.PATH_DISCOUNTS,
         0,
         params.PAGE_SIZE_DISCOUNTS
-      );
+      ); 
       return dispatch(fetchDiscounts(endpoint));
     };
   }
@@ -84,7 +89,7 @@ const fetchDiscounts = endpoint => ({
   }
 });
 
-const likesReducer = (state = initialState.likes, action) => {
+const likes = (state = initialState.likes, action) => {
   switch (action.type) {
     case types.FETCH_LIKES_REQUEST:
       return { ...state, isFetching: true };
@@ -99,23 +104,23 @@ const likesReducer = (state = initialState.likes, action) => {
       return {
         ...state,
         isFetching: false
-      }
+      };
     default:
       return state;
   }
 };
 
-const discountsReducer = (state = initialState.discount, action) => {
+const discounts = (state = initialState.discounts, action) => {
   switch (action.type) {
-    case types.FETCH_DISCOUNT_REQUEST:
+    case types.FETCH_DISCOUNTS_REQUEST:
       return { ...state, isFetching: true };
-    case types.FETCH_DISCOUNT_SUCCESS:
+    case types.FETCH_DISCOUNTS_SUCCESS:
       return {
         ...state,
         isFetching: false,
         ids: state.ids.concat(action.response.ids)
       };
-    case types.FETCH_DISCOUNT_FAILURE:
+    case types.FETCH_DISCOUNTS_FAILURE:
       return {
         ...state,
         isFetching: false
@@ -126,8 +131,25 @@ const discountsReducer = (state = initialState.discount, action) => {
 };
 
 const reducer = combineReducers({
-  likesReducer,
-  discountsReducer
+  likes,
+  discounts
 });
 
 export default reducer;
+
+// selectors
+export const getLikes = state => {
+  return state.home.likes.ids.map(id => {
+    return state.entities.products[id]
+  })
+}
+
+export const getDiscounts = state => {
+  return state.home.discounts.ids.map(id => {
+    return state.entities.products[id]
+  })
+}
+
+export const getPageCountOfLikes = state => {
+  return state.home.likes.pageCount;
+};

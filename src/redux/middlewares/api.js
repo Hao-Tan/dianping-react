@@ -5,7 +5,7 @@ export const FETCH_DATA = "FETCH DATA";
 
 export default store => next => action => {
   const callAPI = action[FETCH_DATA];
-  if (typeof callAPI === undefined) {
+  if (typeof callAPI === "undefined") {
     return next(action);
   }
 

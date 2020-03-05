@@ -4,7 +4,7 @@ const headers = new Headers({
 })
 
 const requestHandler = res => {
-  if (res.status === '200' || res.status ==='304') {
+  if (res.status === 200 || res.status === 304) {
     return res.json()
   } else {
     return Promise.reject('request failed due to server error')

@@ -37,11 +37,11 @@ export default store => next => action => {
   return fetchData(endpoint, schema)
     .then(
       // 请求成功
-      res =>
+      response =>
         next(
           actionWith({
             type: successType,
-            res
+            response
           })
         )
     )

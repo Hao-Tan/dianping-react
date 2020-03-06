@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import ErrorToast from "../../components/ErrorToast";
 import { actions as appActions, getError } from "../../redux/modules/app";
 import Home from '../Home';
+import ProductDetail from '../ProductDetail';
 
 
 class App extends Component {
@@ -14,7 +16,12 @@ class App extends Component {
     } = this.props;
     return (
       <div className="App">
-        <Home />
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Home}></Route>
+            <Route path="/detail/:id" component={ProductDetail}></Route>
+          </Switch>
+        </Router>
         {error ? <ErrorToast msg={error} clearError={clearError} /> : null}
       </div>
     );

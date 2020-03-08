@@ -7,10 +7,14 @@ export default class Search extends Component {
   render() {
     return (
       <div>
-        <SearchBox />
+        <SearchBox cancel={this.handleCancel}/>
         <PopularSearch />
         <SearchHistory />
       </div>
     )
+  }
+  
+  handleCancel = () => {
+    this.props.history.goBack()
   }
 }

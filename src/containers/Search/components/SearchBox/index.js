@@ -44,7 +44,7 @@ class SearchBox extends Component {
         <div className="searchBox__container">
           <input className="searchBox__text" value={this.state.inputText} onChange={this.handleChange}/>
           <span className="searchBox__clear" onClick={this.handleClear}></span>
-          <span className="searchBox__cancel" onClick={this.handleCancel}>取消</span>
+          <span className="searchBox__cancel" onClick={this.props.cancel}>取消</span>
         </div>
         {this.state.inputText.length > 0 ? this.renderSuggestList() : null}
       </div>
@@ -79,10 +79,6 @@ class SearchBox extends Component {
     this.setState({
       inputText: ''
     })
-  }
-
-  handleCancel = () => {
-
   }
 }
 

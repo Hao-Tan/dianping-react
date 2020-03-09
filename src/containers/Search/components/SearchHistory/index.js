@@ -1,42 +1,44 @@
-import React, { Component } from 'react';
-import "./style.css"
+import React, { Component } from "react";
+import "./style.css";
 
 class SearchHistory extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: ["烤鸭", "火锅", "面条"]
-    }
-  }
-
   render() {
+    const { historyKeywords: data } = this.props;
     return (
       <div className="searchHistory">
-        <div className="searchHistory__header">搜索记录</div>
+        <div className="searchHistory__header">
+          搜索记录
+        </div>
         <ul className="searchHistory__list">
-          {
-            this.state.data.map((item, index) =>{
-              return <li key={index} onClick={this.handleClick}className="searchHistory__item">
-                {item}
+          {data.map((item, index) => {
+            return (
+              <li
+                key={item.id}
+                onClick={e => this.handleClick(item)}
+                className="searchHistory__item"
+              >
+                {item.keyword}
               </li>
-            })
-          }
+            );
+          })}
         </ul>
-        <div className="searchHistory__clear" onClick={this.handleClear}>清除搜索记录</div>
+        <div
+          className="searchHistory__clear"
+          onClick={this.handleClear}
+        >
+          清除搜索记录
+        </div>
       </div>
     );
   }
 
-  handleClick = () => {
-
-  }
+  handleClick = (item) => {
+    this.props.onClickItem(item)
+  };
 
   handleClear = () => {
-    this.setState({
-      data: []
-    })
-  }
-
+    this.props.onClearHistoryKeywords();
+  };
 }
 
 export default SearchHistory;

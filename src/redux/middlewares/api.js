@@ -11,7 +11,7 @@ export default store => next => action => {
 
   const { endpoint, schema, types } = callAPI;
   if (typeof endpoint !== "string") {
-    throw new Error("endpoing必须为字符串类型的URL");
+    throw new Error("endpoint必须为字符串类型的URL");
   }
   if (!schema) {
     throw new Error("必须指定领域实体的schema");

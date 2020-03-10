@@ -69,10 +69,13 @@ class Search extends Component {
   handleClickItem = item => {
     const {
       setInputText,
-      addHistoryKeyword
+      addHistoryKeyword,
+      loadRelatedShops
     } = this.props.searchActions;
     setInputText(item.keyword);
     addHistoryKeyword(item.id);
+    loadRelatedShops(item.id)
+    this.props.history.push("/searchResult")
   };
 
   handleClearHistoryKeywords = () => {

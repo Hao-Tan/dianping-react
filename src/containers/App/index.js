@@ -7,6 +7,7 @@ import { actions as appActions, getError } from "../../redux/modules/app";
 import Home from '../Home';
 import ProductDetail from '../ProductDetail';
 import Search from "../Search";
+import SearchResult from '../SearchResult'
 
 
 class App extends Component {
@@ -22,6 +23,7 @@ class App extends Component {
             <Route path="/" exact component={Home}></Route>
             <Route path="/detail/:id" component={ProductDetail}></Route>
             <Route path="/search" component={Search}></Route>
+            <Route path="/searchResult" component={SearchResult}></Route>
           </Switch>
         </Router>
         {error ? <ErrorToast msg={error} clearError={clearError} /> : null}

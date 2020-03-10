@@ -13,5 +13,8 @@ export default {
   },
   getRelatedKeywords(text) {
     return `/mock/keywords/related.json?keywords=${text}`
-  }
+  },
+  getRelatedShops(keyword) {
+    return `/mock/shops/related.json?keyword=${keyword}`;
+  },
 };

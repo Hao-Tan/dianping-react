@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ErrorToast from "../../components/ErrorToast";
 import { actions as appActions, getError } from "../../redux/modules/app";
-import Home from '../Home';
-import ProductDetail from '../ProductDetail';
+import Home from "../Home";
+import ProductDetail from "../ProductDetail";
 import Search from "../Search";
-import SearchResult from '../SearchResult'
-
+import SearchResult from "../SearchResult";
+import Login from "../Login";
 
 class App extends Component {
   render() {
@@ -24,6 +24,7 @@ class App extends Component {
             <Route path="/detail/:id" component={ProductDetail}></Route>
             <Route path="/search" component={Search}></Route>
             <Route path="/searchResult" component={SearchResult}></Route>
+            <Route path="/login" component={Login}></Route>
           </Switch>
         </Router>
         {error ? <ErrorToast msg={error} clearError={clearError} /> : null}
@@ -32,7 +33,7 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     error: getError(state)
   };

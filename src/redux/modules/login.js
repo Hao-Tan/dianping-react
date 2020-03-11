@@ -1,8 +1,8 @@
 const initialState = {
-  username: '',
+  username: localStorage.getItem('usernaem') || '',
   password: '',
   ifFetching: '',
-  status: false
+  status: localStorage.getItem('login') || false
 }
 
 export const types = {
@@ -22,20 +22,22 @@ export const actions = {
     return (dispatch, getState) => {
       const { username, password } = getState().login
       if (!username.trim() || !password.trim()) {
-        console.log("fff");
-        
         return dispatch(loginFailure())
       }
       dispatch(loginRequest())
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve()
+          localStorage.setItem('username', username)
+          localStorage.setItem('login', true)
         }, 1000);
-      }).then(() => {dispatch(loginSuccess)})
+      }).then(() => {dispatch(loginSuccess())})
     }
   },
   logout() {
-      return {
+    localStorage.removeItem('username')
+    localStorage.removeItem('login')
+    return {
       type: types.LOGOUT
     }
   },

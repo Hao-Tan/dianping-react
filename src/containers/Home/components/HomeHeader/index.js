@@ -9,7 +9,7 @@ export default class HomeHeader extends Component {
         <header className="homeHeader__wrapper">
           <a href="##" className="homeHeader__city">北京</a>
           <Link to="/search" href="##" className="homeHeader__search">输入商户名、地点</Link>
-          <Link to="/login" href="##" className="homeHeader__self">
+          <Link to="/user" href="##" className="homeHeader__self">
             <div className="homeHeader__portrait"></div>
           </Link>
         </header>

@@ -4,11 +4,14 @@ import { connect } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ErrorToast from "../../components/ErrorToast";
 import { actions as appActions, getError } from "../../redux/modules/app";
+import { isLogin } from '../../redux/modules/login'
 import Home from "../Home";
 import ProductDetail from "../ProductDetail";
 import Search from "../Search";
 import SearchResult from "../SearchResult";
 import Login from "../Login";
+import User from "../User";
+import PrivateRoute from '../PrivateRoute'
 
 class App extends Component {
   render() {
@@ -20,11 +23,12 @@ class App extends Component {
       <div className="App">
         <Router>
           <Switch>
-            <Route path="/" exact component={Home}></Route>
-            <Route path="/detail/:id" component={ProductDetail}></Route>
-            <Route path="/search" component={Search}></Route>
-            <Route path="/searchResult" component={SearchResult}></Route>
-            <Route path="/login" component={Login}></Route>
+            <Route path="/" exact component={Home} />
+            <Route path="/detail/:id" component={ProductDetail} />
+            <Route path="/search" component={Search} />
+            <Route path="/searchResult" component={SearchResult} />
+            <Route path="/login" component={Login} />
+            <PrivateRoute path="/user" component={User} />
           </Switch>
         </Router>
         {error ? <ErrorToast msg={error} clearError={clearError} /> : null}
@@ -35,7 +39,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    error: getError(state)
+    error: getError(state),
+    login: isLogin(state)
   };
 };
 

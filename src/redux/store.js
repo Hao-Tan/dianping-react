@@ -1,4 +1,7 @@
-import { createStore, applyMiddleware } from "redux";
+import {
+  createStore,
+  applyMiddleware
+} from "redux";
 import thunk from "redux-thunk";
 import api from "../redux/middlewares/api";
 import rootReducer from "./modules";
@@ -6,17 +9,20 @@ import rootReducer from "./modules";
 let store;
 
 if (
-  process.env.NODE_ENV === "production" &&
-  window.__REDUX_DEVTOOLS_EXTENTION__
+  process.env.NODE_ENV !== "production" &&
+  window.__REDUX_DEVTOOLS_EXTENSION__
 ) {
-  const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENTION_COMPOSE__;
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
   store = createStore(
     rootReducer,
-    composeEnhancer,
-    applyMiddleware(thunk, api)
+    composeEnhancers(applyMiddleware(thunk, api))
   );
 } else {
-  store = createStore(rootReducer, applyMiddleware(thunk, api));
+  store = createStore(
+    rootReducer,
+    applyMiddleware(thunk, api)
+  );
 }
 
 export default store;

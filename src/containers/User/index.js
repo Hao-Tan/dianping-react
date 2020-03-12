@@ -1,20 +1,24 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
+import UserMain from "./components/UserMain";
+import UserHeader from "./components/UserHeader";
 
-
-export default class User extends Component {
+class User extends Component {
   render() {
     return (
       <div>
-        {
-          [1,2,3,4,5].map((item,index) => (
-            <div key={index} onClick={(e)=> {console.log(e,this,item)}}> {item} </div>
-          ))
-        }
+        <UserHeader onBack={this.handleBack} onLogout={this.handleLogout} />
+        <UserMain />
       </div>
-    )
+    );
   }
 
-  handleClick = (e) => {
-    console.log(e)
-  }
+  handleBack = () => {
+    // todo
+  };
+
+  handleLogout = () => {
+    // todo
+  };
 }
+
+export default User;

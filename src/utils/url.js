@@ -17,4 +17,7 @@ export default {
   getRelatedShops(keyword) {
     return `/mock/shops/related.json?keyword=${keyword}`;
   },
+  getOrders() {
+    return `/mock/orders/orders.json`;
+  }
 };

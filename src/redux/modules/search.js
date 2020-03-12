@@ -37,7 +37,7 @@ const initialState = {
   searchedShopsKeywords: {}
 };
 
-export const types = {
+const types = {
   // 获取热门搜索关键词
   FETCH_POPULAR_KEYWORDS_REQUEST:
     "SEARCH/FETCH_POPULAR_KEYWORDS_REQUEST",

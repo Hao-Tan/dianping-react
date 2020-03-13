@@ -1,12 +1,20 @@
 import React, { Component } from "react";
-import OrderItem from "../OrderItem";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import {
+  actions as userActions,
+  getCurrentTab,
+  getDeletStatus
+} from "../../../../redux/modules/user";
+import OrderItem from "../../components/OrderItem";
+import Confirm from "../../../../components/Confirm";
 import "./style.css";
 
 const tabTitles = ["全部订单", "待付款", "可使用", "退款/售后"];
 
 class UserMain extends Component {
   render() {
-    const { currentTab, data } = this.props;
+    const { currentTab, data, deleteStatus, userActions } = this.props;
     return (
       <div className="userMain">
         <div className="userMain__menu">
@@ -35,13 +43,28 @@ class UserMain extends Component {
             ? this.renderOrderList(data)
             : this.renderEmpty()}
         </div>
+        {deleteStatus ? (
+          <Confirm
+            content="确定删除该订单吗？"
+            cancelText="取消"
+            confirmText="确定"
+            onCancel={userActions.hideDeleteDialog}
+            onConfirm={userActions.deleteOrder}
+          />
+        ) : null}
       </div>
     );
   }
 
   renderOrderList = data => {
     return data.map(item => {
-      return <OrderItem key={item.id} data={item} />;
+      return (
+        <OrderItem
+          key={item.id}
+          data={item}
+          onRemove={this.handleRemove.bind(this, item.id)}
+        />
+      );
     });
   };
 
@@ -55,9 +78,28 @@ class UserMain extends Component {
     );
   };
 
+  // 点击标签
   handleClickTab = index => {
-    this.props.onSetCurrentType(index)
+    this.props.userActions.setCurrentTab(index);
+  };
+
+  // 点击移除
+  handleRemove = (orderId) => {
+    this.props.userActions.showDeleteDialog(orderId);
   };
 }
 
-export default UserMain;
+const mapStateToProps = (state, props) => {
+  return {
+    currentTab: getCurrentTab(state),
+    deleteStatus: getDeletStatus(state)
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    userActions: bindActionCreators(userActions, dispatch)
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserMain);

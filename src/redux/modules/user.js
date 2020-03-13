@@ -6,7 +6,9 @@ import {
   TO_PAY_TYPE,
   AVAILABLE_TYPE,
   REFUND_TYPE,
-  getOrderById
+  getOrderById,
+  types as orderTypes,
+  actions as orderActions
 } from "./entities/orders";
 
 const initialState = {
@@ -17,7 +19,12 @@ const initialState = {
     refundIds: [], // 退款订单
     availableIds: [] // 可使用的订单
   },
-  currentTab: 0
+  currentTab: 0,
+  // 当前删除弹框对应的订单信息
+  currentOrder: {
+    id: null,
+    isDeleting: false
+  }
 };
 
 // types
@@ -27,7 +34,13 @@ const types = {
   FETCH_ORDERS_SUCCESS: "USER/FETCH_ORDERS_SUCCESS",
   FETCH_ORDERS_FAILURE: "USER/FETCH_ORDERS_FAILURE",
   // 设置当前选中的type
-  SET_CURRENT_TAB: "USER/SET_CURRENT_TAB"
+  SET_CURRENT_TAB: "USER/SET_CURRENT_TAB",
+  // 删除订单所需的actionTypes
+  DELETE_ORDERS_REQUEST: "USER/DELETE_ORDERS_REQUEST",
+  DELETE_ORDERS_SUCCESS: "USER/DELETE_ORDERS_SUCCESS",
+  DELETE_ORDERS_FAILURE: "USER/DELETE_ORDERS_FAILURE",
+  SHOW_DELETE_DIALOG: "USER/SHOW_DELETE_DIALOG",
+  HIDE_DELETE_DIALOG: "USER/HIDE_DELETE_DIALOG"
 };
 
 // 对外暴露的action creators
@@ -49,6 +62,35 @@ export const actions = {
       type: types.SET_CURRENT_TAB,
       index
     };
+  },
+  // 删除订单
+  deleteOrder() {
+    return (dispatch, getState) => {
+      const { id } = getState().user.currentOrder;
+      if (id) {
+        dispatch(deleteOrderRequest());
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve();
+          }, 500);
+        }).then(() => {
+          dispatch(deleteOrderSuccess(id));
+          dispatch(orderActions.deleteOrder(id));
+        });
+      }
+    };
+  },
+  // 显示删除对话框
+  showDeleteDialog(orderId) {
+    return {
+      type: types.SHOW_DELETE_DIALOG,
+      orderId
+    }
+  },
+  hideDeleteDialog() {
+    return {
+      type: types.HIDE_DELETE_DIALOG
+    }
   }
 };
 
@@ -62,6 +104,15 @@ const fetchOrders = endpoint => ({
     endpoint,
     schema
   }
+});
+
+const deleteOrderRequest = () => ({
+  type: types.DELETE_ORDERS_REQUEST
+});
+
+const deleteOrderSuccess = orderId => ({
+  type: types.DELETE_ORDERS_SUCCESS,
+  orderId
 });
 
 const orders = (state = initialState.orders, action) => {
@@ -88,9 +139,25 @@ const orders = (state = initialState.orders, action) => {
       };
     case types.FETCH_ORDERS_FAILURE:
       return { ...state, isFetching: false };
+    
+    case orderTypes.DELETE_ORDER:
+    case types.DELETE_ORDERS_SUCCESS:
+      return {
+        ...state,
+        ids: removeOrderId(state, "ids", action.orderId),
+        toPayIds: removeOrderId(state, "toPayIds", action.orderId),
+        availableIds: removeOrderId(state, "availableIds", action.orderId),
+        refundIds: removeOrderId(state, "refundIds", action.orderId)
+      };
     default:
       return state;
   }
+};
+
+const removeOrderId = (state, key, orderId) => {
+  return state[key].filter(id => {
+    return id !== orderId;
+  });
 };
 
 const currentTab = (state = initialState.currentTab, action) => {
@@ -102,9 +169,23 @@ const currentTab = (state = initialState.currentTab, action) => {
   }
 };
 
+const currentOrder = (state = initialState.currentOrder, action) => {
+  switch (action.type) {
+    case types.SHOW_DELETE_DIALOG:
+      return { ...state, id: action.orderId, isDeleting: true }
+    case types.HIDE_DELETE_DIALOG:
+    case types.DELETE_ORDERS_SUCCESS:
+    case types.DELETE_ORDERS_FAILURE:
+      return initialState.currentOrder
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   orders,
-  currentTab
+  currentTab,
+  currentOrder
 });
 
 // selectors
@@ -120,3 +201,7 @@ export const getOrders = state => {
     return getOrderById(state, id);
   });
 };
+
+export const getDeletStatus = state => {
+  return state.user.currentOrder.isDeleting
+} 

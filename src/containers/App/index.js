@@ -12,6 +12,7 @@ import SearchResult from "../SearchResult";
 import Login from "../Login";
 import User from "../User";
 import PrivateRoute from '../PrivateRoute'
+import Purchase from '../Purchase'
 
 class App extends Component {
   render() {
@@ -29,6 +30,7 @@ class App extends Component {
             <Route path="/searchResult" component={SearchResult} />
             <Route path="/login" component={Login} />
             <PrivateRoute path="/user" component={User} />
+            <PrivateRoute path="/purchase/:id" component={Purchase} />
           </Switch>
         </Router>
         {error ? <ErrorToast msg={error} clearError={clearError} /> : null}

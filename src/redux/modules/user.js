@@ -10,6 +10,7 @@ import {
   types as orderTypes,
   actions as orderActions
 } from "./entities/orders";
+import { actions as commentsActions } from "./entities/comments";
 
 const initialState = {
   orders: {
@@ -20,10 +21,13 @@ const initialState = {
     availableIds: [] // 可使用的订单
   },
   currentTab: 0,
-  // 当前删除弹框对应的订单信息
+  // 当前操作对应的订单信息
   currentOrder: {
     id: null,
-    isDeleting: false
+    isDeleting: false,
+    isCommenting: false,
+    comment: "",
+    stars: 0
   }
 };
 
@@ -39,8 +43,20 @@ const types = {
   DELETE_ORDERS_REQUEST: "USER/DELETE_ORDERS_REQUEST",
   DELETE_ORDERS_SUCCESS: "USER/DELETE_ORDERS_SUCCESS",
   DELETE_ORDERS_FAILURE: "USER/DELETE_ORDERS_FAILURE",
+  // 删除确认对话框
   SHOW_DELETE_DIALOG: "USER/SHOW_DELETE_DIALOG",
-  HIDE_DELETE_DIALOG: "USER/HIDE_DELETE_DIALOG"
+  HIDE_DELETE_DIALOG: "USER/HIDE_DELETE_DIALOG",
+  // 评价订单编辑
+  SHOW_COMMENT_AREA: "USER/SHOW_COMMENT_AREA",
+  HIDE_COMMENT_AREA: "USER/HIDE_COMMENT_AREA",
+  // 编辑评价内容
+  SET_COMMENT: "USER/SET_COMMENT",
+  // 打分
+  SET_STARS: "USER/SET_STARS",
+  // 提交评价
+  POST_COMMENT_REQUEST: "USER/POST_COMMENT_REQUEST",
+  POST_COMMENT_SUCCESS: "USER/POST_COMMENT_SUCCESS",
+  POST_COMMENT_FAILURE: "USER/POST_COMMENT_FAILURE"
 };
 
 // 对外暴露的action creators
@@ -85,12 +101,61 @@ export const actions = {
     return {
       type: types.SHOW_DELETE_DIALOG,
       orderId
-    }
+    };
   },
+  // 隐藏删除对话框
   hideDeleteDialog() {
     return {
       type: types.HIDE_DELETE_DIALOG
-    }
+    };
+  },
+  // 显示评价框
+  showCommentArea(orderId) {
+    return {
+      type: types.SHOW_COMMENT_AREA,
+      orderId
+    };
+  },
+  // 隐藏评价框
+  hideCommentArea(orderId) {
+    return {
+      type: types.HIDE_COMMENT_AREA
+    };
+  },
+  // 设置评价信息
+  setComment(comment) {
+    return {
+      type: types.SET_COMMENT,
+      comment
+    };
+  },
+  // 设置评级等级
+  setStars(stars) {
+    return {
+      type: types.SET_STARS,
+      stars
+    };
+  },
+  // 提交评价
+  submitComment() {
+    return (dispatch, getState) => {
+      const { id, stars, comment } = getState().user.currentOrder;
+      const commentObj = {
+        id: +new Date(),
+        stars: stars,
+        content: comment
+      };
+      dispatch(postCommentRequest());
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      }).then(() => {
+        dispatch(postCommentSuccess());
+        dispatch(commentsActions.addComment(commentObj));
+        dispatch(orderActions.addComment(id, commentObj.id));
+      });
+    };
   }
 };
 
@@ -113,6 +178,14 @@ const deleteOrderRequest = () => ({
 const deleteOrderSuccess = orderId => ({
   type: types.DELETE_ORDERS_SUCCESS,
   orderId
+});
+
+const postCommentRequest = () => ({
+  type: types.POST_COMMENT_REQUEST
+});
+
+const postCommentSuccess = () => ({
+  type: types.POST_COMMENT_SUCCESS
 });
 
 const orders = (state = initialState.orders, action) => {
@@ -139,7 +212,7 @@ const orders = (state = initialState.orders, action) => {
       };
     case types.FETCH_ORDERS_FAILURE:
       return { ...state, isFetching: false };
-    
+
     case orderTypes.DELETE_ORDER:
     case types.DELETE_ORDERS_SUCCESS:
       return {
@@ -171,12 +244,21 @@ const currentTab = (state = initialState.currentTab, action) => {
 
 const currentOrder = (state = initialState.currentOrder, action) => {
   switch (action.type) {
+    case types.SHOW_COMMENT_AREA:
+      return { ...state, isCommenting: true, id: action.orderId };
+    case types.SET_COMMENT:
+      return { ...state, comment: action.comment };
+    case types.SET_STARS:
+      return { ...state, stars: action.stars };
     case types.SHOW_DELETE_DIALOG:
-      return { ...state, id: action.orderId, isDeleting: true }
+      return { ...state, id: action.orderId, isDeleting: true };
     case types.HIDE_DELETE_DIALOG:
+    case types.HIDE_COMMENT_AREA:
     case types.DELETE_ORDERS_SUCCESS:
     case types.DELETE_ORDERS_FAILURE:
-      return initialState.currentOrder
+    case types.POST_COMMENT_SUCCESS:
+    case types.POST_COMMENT_FAILURE:
+      return initialState.currentOrder;
     default:
       return state;
   }
@@ -202,6 +284,18 @@ export const getOrders = state => {
   });
 };
 
-export const getDeletStatus = state => {
-  return state.user.currentOrder.isDeleting
-} 
+export const getDeletingOrderId = state => {
+  return state.user.currentOrder && state.user.currentOrder.isDeleting ? state.user.currentOrder.id : null
+};
+
+export const getCommentingOrderId = state => {
+  return state.user.currentOrder && state.user.currentOrder.isCommenting ? state.user.currentOrder.id : null
+}
+
+export const getCurrentOrderComment = state => {
+  return state.user.currentOrder ? state.user.currentOrder.comment : ""
+}
+
+export const getCurrentOrderStars = state => {
+  return state.user.currentOrder ? state.user.currentOrder.stars : 0
+}

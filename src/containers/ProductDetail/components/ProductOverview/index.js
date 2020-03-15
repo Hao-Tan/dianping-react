@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { Link } from 'react-router-dom'
 import "./style.css";
 
 export default class ProductOverview extends Component {
   render() {
-    const { shop, picture, description, currentPrice, oldPrice} = this.props.data
+    const { id, shop, picture, description, currentPrice, oldPrice} = this.props.data
     
     return (
       <div>
@@ -28,9 +29,9 @@ export default class ProductOverview extends Component {
             <span className="productOverview__price--old">
               ¥{oldPrice}
             </span>
-            <a href="##" className="productOverview__btn">
+            <Link to={`/purchase/${id}`} className="productOverview__btn">
               立即购买
-            </a>
+            </Link>
           </div>
           <ul className="productOverview__remark">
             <li className="productOverview__remarkItem">

@@ -4,7 +4,8 @@ import "./style.css";
 class OrderItem extends Component {
   render() {
     const {
-      data: { title, statusText, orderPicUrl, channel, text, type }
+      data: { id, title, statusText, orderPicUrl, channel, text, type, commentId },
+      isCommenting
     } = this.props;
     return (
       <div className="orderItem">
@@ -24,17 +25,80 @@ class OrderItem extends Component {
         <div className="orderItem__bottom">
           <div className="orderItem__type">{channel}</div>
           <div>
-            {type === 1 ? <div className="orderItem__btn">评价</div> : null}
-            <div className="orderItem__btn" onClick={this.handleRemove}>删除</div>
+            {type === 1 && !commentId ? (
+              <div
+                className="orderItem__btn"
+                onClick={this.handleComment.bind(this, id)}
+              >
+                评价
+              </div>
+            ) : null}
+            <div className="orderItem__btn" onClick={this.handleRemove}>
+              删除
+            </div>
           </div>
         </div>
+        {isCommenting ? this.renderEditArea() : null}
       </div>
     );
   }
 
-  handleRemove = () => {
-    this.props.onRemove()
+  renderEditArea() {
+    return (
+      <div className="orderItem__commentContainer">
+        <textarea
+          className="orderItem__comment"
+          value={this.props.comment}
+          onChange={this.handleCommentChange}
+        ></textarea>
+        {this.renderStars()}
+        <button
+          className="orderItem__commentBtn"
+          onClick={this.props.onSubmitComment}
+        >
+          提交
+        </button>
+        <button
+          className="orderItem__commentBtn"
+          onClick={this.props.onCancelComment}
+        >
+          取消
+        </button>
+      </div>
+    );
   }
+
+  renderStars() {
+    const { stars } = this.props;
+    return (
+      <div>
+        {[1, 2, 3, 4, 5].map((item, index) => {
+          const lightClass = stars >= item ? "orderItem__star--light" : "";
+          return (
+            <span
+              className={"orderItem__star " + lightClass}
+              key={index}
+              onClick={this.props.onStarsChange.bind(this, item)}
+            >
+              ★
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+
+  handleComment = orderId => {
+    this.props.onComment(orderId);
+  };
+
+  handleCommentChange = e => {
+    this.props.onCommentChange(e.target.value);
+  };
+
+  handleRemove = () => {
+    this.props.onRemove();
+  };
 }
 
 export default OrderItem;

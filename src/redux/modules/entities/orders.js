@@ -6,14 +6,33 @@ export const schema = {
 };
 
 export const types = {
-  DELETE_ORDER: "ORDERS/DELETE_ORDER"
+  DELETE_ORDER: "ORDERS/DELETE_ORDER",
+  ADD_COMMENT: "OREDERS/ADD_COMMENT",
+  ADD_ORDER: "ORDERS/ADD_ORDER"
 }
+
+let orderIdCounter = 10;
 
 export const actions = {
   deleteOrder(orderId) {
     return {
       type: types.DELETE_ORDER,
       orderId
+    }
+  },
+  addComment(orderId, commentId) {
+    return {
+      type: types.ADD_COMMENT,
+      orderId,
+      commentId
+    }
+  },
+  addOrder(order) {
+    const orderId = `o-${ ++orderIdCounter }`
+    return {
+      type: types.ADD_ORDER,
+      orderId,
+      order: { ...order, id: orderId }
     }
   }
 }
@@ -29,6 +48,19 @@ const reducer = (state={}, action) => {
   if (action.type === types.DELETE_ORDER) {
     const { [action.orderId]: deleteOrder, ...restOrders} = state
     return restOrders
+  } else if (action.type === types.ADD_ORDER) {
+    return {
+      ...state,
+      [action.orderId]: action.order
+    }
+  } else if (action.type === types.ADD_COMMENT) {
+    return {
+      ...state,
+      [action.orderId]: {
+        ...state[action.orderId],
+        commentId: action.commentId
+      }
+    } 
   } else {
     return normalReducer(state, action)
   }

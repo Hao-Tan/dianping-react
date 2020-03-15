@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import { FETCH_DATA } from '../middlewares/api'
 import url from '../../utils/url'
-import { schema as productSchema, getProduct, getProductById } from './entities/products'
+import { schema as productSchema, getProductDetail, getProductById } from './entities/products'
 import { schema as shopSchema, getShop } from './entities/shops'
 
 export const types = {
@@ -125,7 +125,9 @@ export default reducer;
 
 
 // selectors
-export { getProduct }
+export const getProduct = (state, id) => {
+  return getProductDetail(state, id)
+}
 
 /**
  * 通过商品获取店铺相关信息

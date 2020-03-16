@@ -4,15 +4,19 @@ import { connect } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ErrorToast from "../../components/ErrorToast";
 import { actions as appActions, getError } from "../../redux/modules/app";
-import { isLogin } from '../../redux/modules/login'
-import Home from "../Home";
-import ProductDetail from "../ProductDetail";
-import Search from "../Search";
-import SearchResult from "../SearchResult";
-import Login from "../Login";
-import User from "../User";
-import PrivateRoute from '../PrivateRoute'
-import Purchase from '../Purchase'
+import { isLogin } from "../../redux/modules/login";
+import PrivateRoute from "../PrivateRoute";
+import asyncComponent from '../../utils/asyncComponent'
+
+const [Home, ProductDetail, Search, SearchResult, Login, User, Purchase] = [
+  asyncComponent(() => import("../Home")),
+  asyncComponent(() => import("../ProductDetail")),
+  asyncComponent(() => import("../Search")),
+  asyncComponent(() => import("../SearchResult")),
+  asyncComponent(() => import("../Login")),
+  asyncComponent(() => import("../User")),
+  asyncComponent(() => import("../Purchase"))
+];
 
 class App extends Component {
   render() {
